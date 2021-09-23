@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Home - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+	{% if current_user.is_authenticated and not current_user.email_confirmed %}
+		Please confirm your email.
+		<a href="{{ url_for('resend') }}">Click here to resend email confirmation link</a>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Login - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+	<h3 class="text-center"> Log in to Flask-O-shop </h3>
+	<hr>
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+		{% for c, msg in msgs %}
+			{% if c == 'error' %}
+				<div class="flash-error">
+			{% else %}
+				<div class="success">
+			{% endif %}
+				{{ msg }}</div><br>
+		{% endfor %}
+	{% endwith %}
+	<div class="forms">
+		{{ wtf.quick_form(form) }}
+	</div>
+{% endblock %}

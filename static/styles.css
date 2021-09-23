@@ -1,0 +1,27 @@
+.main {
+	padding: 15vh 0;
+}
+
+.forms, .flash-error, .success {
+	margin: 0 auto;
+	max-width: 400px;
+}
+
+form .btn {
+	background: #343a40;
+	color: white;
+}
+
+.flash-error, .help-block, .success {
+	text-align: center;
+	padding: 5px;
+	font-weight:bold;
+}
+
+.flash-error, .help-block {
+	color: red;
+}
+
+.success {
+	color:green;
+}

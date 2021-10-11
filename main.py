@@ -35,7 +35,7 @@ with app.app_context():
 @app.context_processor
 def inject_now():
 	""" sends datetime to templates as 'now' """
-    return {'now': datetime.utcnow()}
+	return {'now': datetime.utcnow()}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -52,6 +52,8 @@ def home():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
+	if current_user.is_authenticated:
+		return redirect(url_for('home'))
 	form = LoginForm()
 	if form.validate_on_submit():
 		email = form.email.data
@@ -69,6 +71,8 @@ def login():
 
 @app.route("/register", methods=['POST', 'GET'])
 def register():
+	if current_user.is_authenticated:
+		return redirect(url_for('home'))
 	form = RegisterForm()
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()

@@ -1,5 +1,5 @@
 .main {
-	padding: 15vh 0;
+	padding: 10vh 0;
 }
 
 .forms, .flash-error, .success {
@@ -8,7 +8,7 @@
 }
 
 form .btn {
-	background: #343a40;
+	background: #007bff;
 	color: white;
 }
 
@@ -24,4 +24,30 @@ form .btn {
 
 .success {
 	color:green;
+}
+
+.items {
+	max-width: 900px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	gap: 70px;
+}
+
+.item {
+	width:250px;
+	border: solid 1px #007bff;
+	padding: 20px;
+}
+
+.pic {
+	width:100px;
+	height: 100px;
+}
+
+.right-item {
+	float:right;
+	color:green;
+	font-weight: bolder;
 }

@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from db_models import db, User
+from db_models import db, User, Item, Cart
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from funcs import mail, send_confirmation_email
@@ -43,7 +43,11 @@ def load_user(user_id):
 
 @app.route("/")
 def home():
-	return render_template("home.html")
+	items = Item.query.all()
+	# data = Item(name="Iphone 13", category="smartphone", price="1299", image="https://google.com", details="5gb ram<br>256gb storage<br>nice camera")
+	# db.session.add(data)
+	# db.session.commit()
+	return render_template("home.html", items=items)
 
 # @app.route("/item/<int:id>")
 # def item(id):
@@ -59,7 +63,7 @@ def login():
 		email = form.email.data
 		user = User.query.filter_by(email=email).first()
 		if user == None:
-			flash(f"User with email {email} doesn't exist!", "error")
+			flash(f'User with email {email} doesn\'t exist!', 'error')
 			return redirect(url_for('login'))
 		elif check_password_hash(user.password, form.password.data):
 			login_user(user)
@@ -124,6 +128,40 @@ def resend():
 	logout_user()
 	flash('Confirmation email sent successfully.', 'success')
 	return redirect(url_for('login'))
+
+@app.route("/add/<id>")
+def add_to_cart(id):
+	if not current_user.is_authenticated:
+		flash('You must login first!', 'error')
+		return redirect(url_for('login'))
+	
+	item = Cart(uid=current_user.id, itemid=id)
+	db.session.add(item)
+	db.session.commit()
+	flash('Item successfully added to the cart!','success')
+	return redirect(url_for('home'))
+
+@app.route("/cart")
+@login_required
+def cart():
+	data = {}
+	items = []
+	for c in current_user.item:
+		if c.itemid not in data.keys():
+			q = Cart.query.filter_by(uid=current_user.id, itemid=c.itemid).count()
+			data[c.itemid] = q
+			items.append(c)
+			print(c.itemid)
+	return render_template('cart.html', items=items, quantity=data)
+
+@app.route("/remove/<id>")
+@login_required
+def remove(id):
+	to_remove = Cart.query.filter_by(uid=current_user.id, itemid=id).first()
+	db.session.delete(to_remove)
+	db.session.commit()
+	flash('Item successfully removed from the cart!','error')
+	return redirect(url_for('cart'))
 
 
 if __name__ == "__main__":

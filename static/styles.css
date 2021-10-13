@@ -10,6 +10,7 @@
 form .btn {
 	background: #007bff;
 	color: white;
+	border-radius: 5px;
 }
 
 .flash-error, .help-block, .success {
@@ -39,6 +40,7 @@ form .btn {
 	width:250px;
 	border: solid 1px #007bff;
 	padding: 20px;
+	border-radius: 5px;
 }
 
 .pic {
@@ -50,4 +52,16 @@ form .btn {
 	float:right;
 	color:green;
 	font-weight: bolder;
+}
+
+.check {
+	max-width: 300px;
+	margin: 0 auto;
+	margin-top: 50px;
+	font-weight: bold;
+}
+
+.checkout {
+	padding: 5px;
+	border-radius:5px;
 }

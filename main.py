@@ -1,13 +1,12 @@
-import os
+import os, stripe, json
 from datetime import datetime
-from flask import Flask, render_template, redirect, request, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap
 from forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from db_models import db, User, Item, Cart
+from db_models import db, User, Item, cart
 from itsdangerous import URLSafeTimedSerializer
-from flask_mail import Mail, Message
 from funcs import mail, send_confirmation_email
 from dotenv import load_dotenv
 
@@ -22,6 +21,7 @@ app.config['MAIL_PASSWORD'] = os.environ["PASSWORD"]
 app.config['MAIL_SERVER'] = "smtp.googlemail.com"
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_PORT'] = 587
+stripe.api_key = os.environ["STRIPE_PRIVATE"]
 
 Bootstrap(app)
 db.init_app(app)
@@ -44,15 +44,7 @@ def load_user(user_id):
 @app.route("/")
 def home():
 	items = Item.query.all()
-	# data = Item(name="Iphone 13", category="smartphone", price="1299", image="https://google.com", details="5gb ram<br>256gb storage<br>nice camera")
-	# db.session.add(data)
-	# db.session.commit()
 	return render_template("home.html", items=items)
-
-# @app.route("/item/<int:id>")
-# def item(id):
-# 	# fetch item details
-# 	return render_template("item.html", item=item)
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -134,9 +126,12 @@ def add_to_cart(id):
 	if not current_user.is_authenticated:
 		flash('You must login first!', 'error')
 		return redirect(url_for('login'))
-	
-	item = Cart(uid=current_user.id, itemid=id)
-	db.session.add(item)
+
+	item = Item.query.get(id)
+	if current_user in item.owners:
+		flash('Item is already in the cart.', 'error')
+		return(redirect(url_for('home')))
+	item.owners.append(current_user)
 	db.session.commit()
 	flash('Item successfully added to the cart!','success')
 	return redirect(url_for('home'))
@@ -144,25 +139,62 @@ def add_to_cart(id):
 @app.route("/cart")
 @login_required
 def cart():
-	data = {}
-	items = []
-	for c in current_user.item:
-		if c.itemid not in data.keys():
-			q = Cart.query.filter_by(uid=current_user.id, itemid=c.itemid).count()
-			data[c.itemid] = q
-			items.append(c)
-			print(c.itemid)
-	return render_template('cart.html', items=items, quantity=data)
+	# cart quantity measure
+	# data = {}
+	# items = []
+	# for c in current_user.cart_items:
+	# 	if c.itemid not in data.keys():
+	# 		q = Cart.query.filter_by(uid=current_user.id, itemid=c.itemid).count()
+	# 		data[c.itemid] = q
+	# 		items.append(c)
+	# 		print(c.itemid)
+	price = 0
+	price_ids = []
+	for i in current_user.cart_items:
+		price_id_dict = {
+			"price": i.price_id,
+			"quantity": 1,
+			}
+		price_ids.append(price_id_dict)
+		price += i.price
+	return render_template('cart.html', items=current_user.cart_items, price=price, price_ids=price_ids)
 
 @app.route("/remove/<id>")
 @login_required
 def remove(id):
-	to_remove = Cart.query.filter_by(uid=current_user.id, itemid=id).first()
-	db.session.delete(to_remove)
+	item = Item.query.get(id)
+	item.owners.remove(current_user)
 	db.session.commit()
 	flash('Item successfully removed from the cart!','error')
 	return redirect(url_for('cart'))
 
+# stripe stuffs
+@app.route('/payment_success')
+def payment_success():
+	return render_template('success.html')
+
+@app.route('/payment_failure')
+def payment_failure():
+	return render_template('failure.html')
+
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    data = json.loads(request.form['price_ids'].replace("'", '"'))
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=data,
+            payment_method_types=[
+              'card',
+            ],
+            mode='payment',
+            success_url=url_for('payment_success', _external=True),
+            cancel_url=url_for('payment_failure', _external=True),
+        )
+    except Exception as e:
+        return str(e)
+    return redirect(checkout_session.url, code=303)
+
+# TODO: make use of webhooks to determine if the purchase is successful or not and update the cart and place an order
 
 if __name__ == "__main__":
 	app.run(debug=True)

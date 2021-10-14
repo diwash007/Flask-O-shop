@@ -65,3 +65,19 @@ form .btn {
 	padding: 5px;
 	border-radius:5px;
 }
+
+.details {
+	font-size: 0.9em;
+}
+
+table {
+	margin: 0 auto;
+	max-width:700px;
+}
+table tr {
+	border-bottom:1px solid #0046C2;
+}
+
+table td, th {
+padding:0px 50px;
+}

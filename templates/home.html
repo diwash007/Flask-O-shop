@@ -25,10 +25,10 @@
 	<div class="items">
 	{% for item in items %}
 	<div class="item">
-		<img src="{{ item.image }}" class="pic"><br>
-		{{ item.name }}
+		<img src="{{ item.image }}" class="pic"><br><br>
+		<b>{{ item.name }}</b>
 		<span class="right-item">${{ item.price }}</span><br>
-		{{ item.details | safe }}<br><br>
+		<div class="details"> {{ item.details | safe }} </div><br><br>
 		<a href="{{ url_for('add_to_cart', id=item.id) }}">
 			<button class="bg-success btn-primary btn-block"> Add to Cart </button>
 		</a>

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Cart - Flask-O-shop
+{% endblock %}
+<script src="https://js.stripe.com/v3/"></script>
+{% block content %}
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+	{% for c, msg in msgs %}
+		{% if c == 'error' %}
+			<div class="flash-error">
+		{% else %}
+			<div class="success">
+		{% endif %}
+			{{ msg }}</div><br>
+	{% endfor %}
+	{% endwith %}
+	{% if current_user.is_authenticated and not current_user.email_confirmed %}
+		<div>
+			Please confirm your email.
+			<a href="{{ url_for('resend') }}">Click here to resend email confirmation link</a>
+		</div><br>
+	{% endif %}
+
+    {% if not orders %}
+		<div class="flash-error">You haven't placed any orders yet.</div>
+	{% else %}
+    
+    <table class="orders">
+        <tr>
+            <th>Order id</th>
+            <th>Order date</th>
+			<th>Ordered items</th>
+        </tr>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+			<td>
+				{% for i in order.items %}
+					{{ i.item.name }} - <span class="details success">${{ i.item.price }}</span><br>
+				{% endfor %}
+			</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+	{% endif %}
+{% endblock %}

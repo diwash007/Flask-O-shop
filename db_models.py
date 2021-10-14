@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
 	admin = db.Column(db.Boolean, nullable=True, default=False)
 	email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
 	cart_items = db.relationship("Item", secondary=cart, backref=db.backref('owners', lazy='dynamic'))
+	orders = db.relationship("Order", backref='customer')
 
 class Item(db.Model):
 	__tablename__ = "items"
@@ -29,6 +30,7 @@ class Item(db.Model):
 	image = db.Column(db.String(250), nullable=False)
 	details = db.Column(db.String(250), nullable=False)
 	price_id = db.Column(db.String(250), nullable=False)
+	orders = db.relationship("Ordered_item", backref="item")
 # 	user = relationship("Cart", back_populates="item")
 
 # class Cart(db.Model):
@@ -43,7 +45,8 @@ class Order(db.Model):
 	__tablename__ = "orders"
 	id = db.Column(db.Integer, primary_key=True)
 	uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-	order_date = db.Column(db.DateTime, nullable=False)
+	date = db.Column(db.DateTime, nullable=False)
+	items = db.relationship("Ordered_item", backref="order")
 
 class Ordered_item(db.Model):
 	__tablename__ = "ordered_items"

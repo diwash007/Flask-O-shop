@@ -86,7 +86,7 @@ def register():
 		db.session.commit()
 		send_confirmation_email(new_user.email)
 		flash('Thanks for registering! Please check your email to confirm your email address.', 'success')
-		return redirect(url_for('register'))
+		return redirect(url_for('login'))
 	return render_template("register.html", form=form)
 
 @app.route('/confirm/<token>')
@@ -149,6 +149,11 @@ def cart():
 		price_ids.append(price_id_dict)
 		price += i.price
 	return render_template('cart.html', items=current_user.cart_items, price=price, price_ids=price_ids)
+
+@app.route('/orders')
+@login_required
+def orders():
+	return render_template('orders.html', orders=current_user.orders)
 
 @app.route("/remove/<id>")
 @login_required

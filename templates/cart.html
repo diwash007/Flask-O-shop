@@ -22,13 +22,16 @@
 		</div><br>
 	{% endif %}
 
+	{% if not items %}
+		<div class="flash-error">Cart is empty</div>
+	{% endif %}
 	<div class="items">
 	{% for i in items %}
     <div class="item">
-        <img src="{{ i.image }}" class="pic"><br>
-        {{ i.name }}
+        <img src="{{ i.image }}" class="pic"><br><br>
+        <b>{{ i.name }}</b>
         <span class="right-item">${{ i.price }}</span><br>
-        {{ i.details | safe }}<br><br>
+        <div class="details">{{ i.details | safe }}</div><br><br>
         <a href="{{ url_for('remove', id=i.id) }}">
             <button class="bg-danger btn-block btn-primary"> Remove from Cart </button>
         </a>
@@ -39,7 +42,7 @@
 	<div class="check">
 		<form method="POST" action="{{ url_for('create_checkout_session') }}">
 			<input type="hidden" value="{{ price_ids }}" name="price_ids">
-			Grand Total: {{ price }}
+			Grand Total: ${{ price }}
 			<button class="bg-success btn-block btn-primary checkout"> Checkout </button>
 		</form>
 	</div>

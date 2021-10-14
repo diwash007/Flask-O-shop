@@ -1,2 +1,13 @@
-Purchase successful!!
-<a href="{{ url_for('cart') }}">Go back!</a>
+{% extends "base.html" %}
+
+{% block title %}
+	Home - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+    <div class="success">
+        Payment successful!!<br>
+        Order placed successfully.
+        <a href="{{ url_for('cart') }}">Go back!</a>
+    </div>
+{% endblock %}

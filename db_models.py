@@ -38,3 +38,15 @@ class Item(db.Model):
 # 	itemid = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
 # 	user = relationship("User", back_populates="item")
 # 	item = relationship("Item", back_populates="user")
+
+class Order(db.Model):
+	__tablename__ = "orders"
+	id = db.Column(db.Integer, primary_key=True)
+	uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+	order_date = db.Column(db.DateTime, nullable=False)
+
+class Ordered_item(db.Model):
+	__tablename__ = "ordered_items"
+	id = db.Column(db.Integer, primary_key=True)
+	oid = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+	itemid = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)

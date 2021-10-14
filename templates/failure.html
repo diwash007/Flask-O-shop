@@ -1,2 +1,12 @@
-Purchase couldn't be completed. Please try again later.
-<a href="{{ url_for('cart') }}">Go back!</a>
+{% extends "base.html" %}
+
+{% block title %}
+	Home - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+    <div class="flash-error">
+        Payment couldn't be completed. Please try again.
+        <a href="{{ url_for('cart') }}">Go back!</a>
+    </div>
+{% endblock %}

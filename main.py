@@ -1,13 +1,13 @@
 import os, stripe, json
 from datetime import datetime
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_bootstrap import Bootstrap
 from forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from db_models import db, User, Item, cart
+from db_models import db, User, Item
 from itsdangerous import URLSafeTimedSerializer
-from funcs import mail, send_confirmation_email
+from funcs import mail, send_confirmation_email, fulfill_order
 from dotenv import load_dotenv
 
 
@@ -129,25 +129,16 @@ def add_to_cart(id):
 
 	item = Item.query.get(id)
 	if current_user in item.owners:
-		flash('Item is already in the cart.', 'error')
+		flash(f'{item.name} is already in the cart.', 'error')
 		return(redirect(url_for('home')))
 	item.owners.append(current_user)
 	db.session.commit()
-	flash('Item successfully added to the cart!','success')
+	flash(f'{item.name} successfully added to the cart!','success')
 	return redirect(url_for('home'))
 
 @app.route("/cart")
 @login_required
 def cart():
-	# cart quantity measure
-	# data = {}
-	# items = []
-	# for c in current_user.cart_items:
-	# 	if c.itemid not in data.keys():
-	# 		q = Cart.query.filter_by(uid=current_user.id, itemid=c.itemid).count()
-	# 		data[c.itemid] = q
-	# 		items.append(c)
-	# 		print(c.itemid)
 	price = 0
 	price_ids = []
 	for i in current_user.cart_items:
@@ -165,7 +156,7 @@ def remove(id):
 	item = Item.query.get(id)
 	item.owners.remove(current_user)
 	db.session.commit()
-	flash('Item successfully removed from the cart!','error')
+	flash(f'{item.name} successfully removed from the cart!','error')
 	return redirect(url_for('cart'))
 
 # stripe stuffs
@@ -179,22 +170,54 @@ def payment_failure():
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
-    data = json.loads(request.form['price_ids'].replace("'", '"'))
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            line_items=data,
-            payment_method_types=[
-              'card',
-            ],
-            mode='payment',
-            success_url=url_for('payment_success', _external=True),
-            cancel_url=url_for('payment_failure', _external=True),
-        )
-    except Exception as e:
-        return str(e)
-    return redirect(checkout_session.url, code=303)
+	data = json.loads(request.form['price_ids'].replace("'", '"'))
+	try:
+		checkout_session = stripe.checkout.Session.create(
+			client_reference_id=current_user.id,
+			line_items=data,
+			payment_method_types=[
+			  'card',
+			],
+			mode='payment',
+			success_url=url_for('payment_success', _external=True),
+			cancel_url=url_for('payment_failure', _external=True),
+		)
+	except Exception as e:
+		return str(e)
+	return redirect(checkout_session.url, code=303)
 
-# TODO: make use of webhooks to determine if the purchase is successful or not and update the cart and place an order
+@app.route('/stripe-webhook', methods=['POST'])
+def stripe_webhook():
+
+	if request.content_length > 1024*1024:
+		print("Request too big!")
+		abort(400)
+
+	payload = request.get_data()
+	sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
+	ENDPOINT_SECRET = os.environ.get('ENDPOINT_SECRET')
+	event = None
+
+	try:
+		event = stripe.Webhook.construct_event(
+		payload, sig_header, ENDPOINT_SECRET
+		)
+	except ValueError as e:
+		# Invalid payload
+		return {}, 400
+	except stripe.error.SignatureVerificationError as e:
+		# Invalid signature
+		return {}, 400
+
+	if event['type'] == 'checkout.session.completed':
+		session = event['data']['object']
+
+		# Fulfill the purchase...
+		fulfill_order(session)
+
+	# Passed signature verification
+	return {}, 200
+
 
 if __name__ == "__main__":
 	app.run(debug=True)

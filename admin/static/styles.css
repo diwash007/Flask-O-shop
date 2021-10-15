@@ -1,0 +1,38 @@
+.main {
+	padding: 10vh 0;
+}
+
+table {
+	margin: 0 auto;
+}
+table th {
+	color: white;
+	background-color: #343a40;
+	padding: 15px;
+}
+table tr {
+	border-bottom:1px solid #0046C2;
+}
+
+table td, th {
+padding:5px 30px;
+}
+
+.flash-error, .help-block, .success {
+	text-align: center;
+	padding: 5px;
+	font-weight:bold;
+}
+
+.flash-error, .help-block {
+	color: red;
+}
+
+.success {
+	color:green;
+}
+
+.add-new {
+	margin-left:65vw;
+	margin-bottom:20px;
+}

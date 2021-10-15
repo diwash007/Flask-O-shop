@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+	Admin Dashboard - Flask-O-shop
+{% endblock %}
+<script src="https://js.stripe.com/v3/"></script>
+{% block content %}
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+	{% for c, msg in msgs %}
+		{% if c == 'error' %}
+			<div class="flash-error">
+		{% else %}
+			<div class="success">
+		{% endif %}
+			{{ msg }}</div><br>
+	{% endfor %}
+	{% endwith %}
+
+    {% if not orders %}
+		<div class="flash-error">No orders have been placed yet.</div>
+	{% else %}
+    
+    <table class="orders">
+        <tr>
+            <th>Order id</th>
+            <th>Order date</th>
+			<th>Ordered items</th>
+			<th>Order status</th>
+			<th>Operations</th>
+        </tr>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+			<td>
+				{% for i in order.items %}
+					{{ i.item.name }} - <span class="details success">${{ i.item.price }}</span><br>
+				{% endfor %}
+			</td>
+			<td>{{ order.status }}</td>
+			<td>
+				<a href="{{ url_for('admin.edit', type='order', id=order.id) }}">&#9998;</a>
+			</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+	{% endif %}
+{% endblock %}

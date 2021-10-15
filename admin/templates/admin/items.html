@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+	Admin Dashboard - Flask-O-shop
+{% endblock %}
+<script src="https://js.stripe.com/v3/"></script>
+{% block content %}
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+	{% for c, msg in msgs %}
+		{% if c == 'error' %}
+			<div class="flash-error">
+		{% else %}
+			<div class="success">
+		{% endif %}
+			{{ msg }}</div><br>
+	{% endfor %}
+	{% endwith %}
+
+    {% if not items %}
+		<div class="flash-error">No items have been registered yet.</div>
+	{% else %}
+    <div class="add-new btn-success btn">
+        <a href="{{ url_for('admin.add') }}" class="text-light">Add new item</a>
+    </div>
+    <table class="orders">
+        <tr>
+            <th>Item id</th>
+            <th>Name</th>
+			<th>Price</th>
+			<th>Category</th>
+			<th>Img Link</th>
+            <th>Details</th>
+            <th>Operations</th>
+        </tr>
+    {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+			<td>{{ item.price }}</td>
+			<td>{{ item.category }}</td>
+			<td>{{ item.image[:15] }}...</td>
+            <td>{{ item.details[:40] | safe }}...</td>
+			<td>
+                <a href="{{ url_for('admin.edit', type='order', id=item.id) }}">&#9998;</a>
+				<a href="{{ url_for('admin.delete', type='order', id=item.id) }}">&#10060;</a>
+			</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+	{% endif %}
+{% endblock %}

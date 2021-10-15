@@ -9,10 +9,13 @@ from db_models import db, User, Item
 from itsdangerous import URLSafeTimedSerializer
 from funcs import mail, send_confirmation_email, fulfill_order
 from dotenv import load_dotenv
+from admin.routes import admin
 
 
 load_dotenv()
 app = Flask(__name__)
+app.register_blueprint(admin)
+
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DB_URI"]
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

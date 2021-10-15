@@ -25,12 +25,13 @@
     {% if not orders %}
 		<div class="flash-error">You haven't placed any orders yet.</div>
 	{% else %}
-    
+
     <table class="orders">
         <tr>
             <th>Order id</th>
             <th>Order date</th>
 			<th>Ordered items</th>
+			<th>Order status</th>
         </tr>
     {% for order in orders %}
         <tr>
@@ -41,6 +42,7 @@
 					{{ i.item.name }} - <span class="details success">${{ i.item.price }}</span><br>
 				{% endfor %}
 			</td>
+			<td>{{ order.status }}</td>
         </tr>
     {% endfor %}
     </table>

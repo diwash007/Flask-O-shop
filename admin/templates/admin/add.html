@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+	Admin Dashboard - Flask-O-shop
+{% endblock %}
+<script src="https://js.stripe.com/v3/"></script>
+{% block content %}
+	{% with msgs =  get_flashed_messages(with_categories=True) %}
+	{% for c, msg in msgs %}
+		{% if c == 'error' %}
+			<div class="flash-error">
+		{% else %}
+			<div class="success">
+		{% endif %}
+			{{ msg }}</div><br>
+	{% endfor %}
+	{% endwith %}
+
+    <div class="forms">
+		{{ wtf.quick_form(form) }}
+	</div>
+    
+{% endblock %}

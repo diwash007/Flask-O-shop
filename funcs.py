@@ -30,7 +30,7 @@ def fulfill_order(session):
 	""" Fulfils order on successful payment """
 
 	uid = session['client_reference_id']
-	order = Order(uid=uid, date=datetime.datetime.now())
+	order = Order(uid=uid, date=datetime.datetime.now(), status="processing")
 	db.session.add(order)
 	db.session.commit()
 

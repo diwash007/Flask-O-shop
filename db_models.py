@@ -46,6 +46,7 @@ class Order(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 	date = db.Column(db.DateTime, nullable=False)
+	status = db.Column(db.String(50), nullable=False)
 	items = db.relationship("Ordered_item", backref="order")
 
 class Ordered_item(db.Model):

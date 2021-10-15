@@ -2,14 +2,14 @@ import os, stripe, json
 from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_bootstrap import Bootstrap
-from forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from db_models import db, User, Item
+from .db_models import db, User, Item
 from itsdangerous import URLSafeTimedSerializer
-from funcs import mail, send_confirmation_email, fulfill_order
+from .funcs import mail, send_confirmation_email, fulfill_order
 from dotenv import load_dotenv
-from admin.routes import admin
+from .admin.routes import admin
 
 
 load_dotenv()
@@ -227,5 +227,5 @@ def stripe_webhook():
 	return {}, 200
 
 
-if __name__ == "__main__":
-	app.run(debug=True)
+# if __name__ == "__main__":
+# 	app.run(debug=True)

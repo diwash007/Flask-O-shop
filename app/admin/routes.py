@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, flash
 from werkzeug.utils import redirect
-from db_models import Order, Item, db
-from admin.forms import AddItemForm
+from ..db_models import Order, Item, db
+from ..admin.forms import AddItemForm
 
 
 admin = Blueprint("admin", __name__, url_prefix="/admin", static_folder="static", template_folder="templates")
@@ -25,7 +25,7 @@ def add():
         price = form.price.data
         category = form.category.data
         details = form.details.data
-        form.image.data.save('static/uploads/' + form.image.data.filename)
+        form.image.data.save('app/static/uploads/' + form.image.data.filename)
         image = url_for('static', filename=f'uploads/{form.image.data.filename}')
         price_id = form.price_id.data
         item = Item(name=name, price=price, category=category, details=details, image=image, price_id=price_id)

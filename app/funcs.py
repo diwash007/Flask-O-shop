@@ -3,7 +3,7 @@ from flask import render_template, url_for
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-from db_models import Order, Ordered_item, db, User, Item
+from .db_models import Order, Ordered_item, db, User, Item
 
 
 load_dotenv()

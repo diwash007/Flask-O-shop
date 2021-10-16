@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 
 {% block title %}
-	Admin Dashboard - Flask-O-shop
+	Admin items - Flask-O-shop
 {% endblock %}
 <script src="https://js.stripe.com/v3/"></script>
 {% block content %}
@@ -41,8 +41,8 @@
 			<td>{{ item.image[:15] }}...</td>
             <td>{{ item.details[:40] | safe }}...</td>
 			<td>
-                <a href="{{ url_for('admin.edit', type='order', id=item.id) }}">&#9998;</a>
-				<a href="{{ url_for('admin.delete', type='order', id=item.id) }}">&#10060;</a>
+                <a href="{{ url_for('admin.edit', type='item', id=item.id) }}">&#9998;</a>
+				<a href="{{ url_for('admin.delete', id=item.id) }}">&#10060;</a>
 			</td>
         </tr>
     {% endfor %}

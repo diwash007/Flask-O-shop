@@ -1,9 +1,10 @@
 import os, datetime
 from flask import render_template, url_for
 from itsdangerous import URLSafeTimedSerializer
+from flask_login import current_user
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-from .db_models import Order, Ordered_item, db, User, Item
+from .db_models import Order, Ordered_item, db, User
 
 
 load_dotenv()
@@ -22,7 +23,7 @@ def send_confirmation_email(user_email) -> None:
 		'Confirm Your Email Address',
 		recipients=[user_email],
 		html=html,
-		sender="freequotesforyoumyfriend@gmail.com"
+		sender="Flask-O-shop Email confirmation"
 	)
 	mail.send(msg)
 
@@ -42,4 +43,14 @@ def fulfill_order(session):
 		item.owners.remove(current_user)
 		db.session.commit()
 		print("added order and emptied cart")
+
+def admin_only(func):
+	""" Decorator for giving access to authorized users only """
+	def wrapper(*args, **kwargs):
+		if current_user.is_authenticated and current_user.admin == 1:
+			return func(*args, **kwargs)
+		else:
+			return "You are not Authorized to access this URL."
+	wrapper.__name__ = func.__name__
+	return wrapper
 		

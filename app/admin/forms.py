@@ -11,3 +11,7 @@ class AddItemForm(FlaskForm):
 	details = StringField("Details:", validators=[DataRequired()])
 	price_id = StringField("Stripe id:", validators=[DataRequired()])
 	submit = SubmitField("Add")
+
+class OrderEditForm(FlaskForm):
+	status = StringField("Status:", validators=[DataRequired()])
+	submit = SubmitField("Update")

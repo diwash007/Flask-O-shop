@@ -40,6 +40,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('orders') }}">Orders</a>
             </li>
+            {% if current_user.admin == 1 %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+              </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
             </li>

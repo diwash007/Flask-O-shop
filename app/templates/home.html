@@ -28,9 +28,9 @@
 		<img src="{{ item.image }}" class="pic"><br><br>
 		<b>{{ item.name }}</b>
 		<span class="right-item">${{ item.price }}</span><br>
-		<div class="details"> {{ item.details | safe }} </div><br><br>
+		<div class="details"> {{ item.details | safe }} </div><br>
 		<a href="{{ url_for('add_to_cart', id=item.id) }}">
-			<button class="bg-success btn-primary btn-block"> Add to Cart </button>
+			<button class="add-to-cart"> Add to Cart </button>
 		</a>
 	</div>
 	{% endfor %}

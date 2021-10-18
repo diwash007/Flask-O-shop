@@ -33,7 +33,7 @@
         <span class="right-item">${{ i.price }}</span><br>
         <div class="details">{{ i.details | safe }}</div><br><br>
         <a href="{{ url_for('remove', id=i.id) }}">
-            <button class="bg-danger btn-block btn-primary"> Remove from Cart </button>
+            <button class="remove-from-cart"> Remove from Cart </button>
         </a>
 	</div>
         {% endfor %}
@@ -42,7 +42,7 @@
 	<div class="check">
 		<form method="POST" action="{{ url_for('create_checkout_session') }}">
 			<input type="hidden" value="{{ price_ids }}" name="price_ids">
-			Grand Total: ${{ price }}
+			Grand Total: ${{ price }} <br><br>
 			<button class="bg-success btn-block btn-primary checkout"> Checkout </button>
 		</form>
 	</div>

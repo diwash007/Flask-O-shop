@@ -31,13 +31,15 @@
 	<div class="items">
 	{% for i in items %}
     <div class="item">
-        <img src="{{ i.image }}" class="pic"><br><br>
-        <b>{{ i.name }}</b>
-        <span class="right-item">${{ i.price }}</span><br>
-        <div class="details">{{ i.details | safe }}</div><br><br>
-        <a href="{{ url_for('remove', id=i.id) }}">
-            <button class="remove-from-cart"> Remove from Cart </button>
-        </a>
+		<div class="item-wrapper">
+			<img src="{{ i.image }}" class="pic"><br><br>
+			<b>{{ i.name }}</b>
+			<span class="right-item">${{ i.price }}</span><br>
+			<div class="details">{{ i.details | safe }}</div><br>
+			<a href="{{ url_for('remove', id=i.id) }}">
+				<button class="remove-from-cart"> Remove from Cart </button>
+			</a>
+		</div>
 	</div>
         {% endfor %}
 	</div>

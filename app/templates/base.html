@@ -55,6 +55,7 @@
               <i class='fa fa-user-circle' style='font-size:25px'></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="nav-link text-muted" href="#">{{ current_user.name }}</a>
               <a class="nav-link" href="{{ url_for('orders') }}">Orders</a>
               {% if current_user.admin == 1 %}
               <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin</a>

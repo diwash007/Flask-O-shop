@@ -23,7 +23,10 @@
 	{% endif %}
 
     {% if not orders %}
-		<div class="flash-error">You haven't placed any orders yet.</div>
+		<div class="flash-error">
+			You haven't placed any orders yet.<br>
+			<a href="{{ url_for('home') }}">Discover new items</a>
+		</div>
 	{% else %}
 
     <table class="table table-striped">

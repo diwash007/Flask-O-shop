@@ -132,11 +132,11 @@ def add_to_cart(id):
 
 	item = Item.query.get(id)
 	if current_user in item.owners:
-		flash(f'{item.name} is already in the cart.', 'error')
+		flash(f'''{item.name} is already in the <a href=cart>cart</a>.''', 'error')
 		return(redirect(url_for('home')))
 	item.owners.append(current_user)
 	db.session.commit()
-	flash(f'{item.name} successfully added to the cart!','success')
+	flash(f'''{item.name} successfully added to the <a href=cart>cart</a>.''','success')
 	return redirect(url_for('home'))
 
 @app.route("/cart")

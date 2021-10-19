@@ -23,7 +23,10 @@
 	{% endif %}
 
 	{% if not items %}
-		<div class="flash-error">Cart is empty</div>
+		<div class="flash-error">
+			Cart is empty!<br>
+			<a href="{{ url_for('home') }}">Discover new items</a>
+		</div>
 	{% endif %}
 	<div class="items">
 	{% for i in items %}

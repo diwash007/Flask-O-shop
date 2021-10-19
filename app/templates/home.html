@@ -12,7 +12,7 @@
 		{% else %}
 			<div class="success">
 		{% endif %}
-			{{ msg }}</div><br>
+			{{ msg | safe}}</div><br>
 	{% endfor %}
 	{% endwith %}
 	{% if current_user.is_authenticated and not current_user.email_confirmed %}

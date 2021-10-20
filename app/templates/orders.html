@@ -42,7 +42,7 @@
             <td>{{ order.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
 			<td>
 				{% for i in order.items %}
-					{{ i.item.name }} - <span class="details success">${{ i.item.price }}</span><br>
+					{{ i.item.name }} x <span class="success">{{ i.quantity }}</span><br>
 				{% endfor %}
 			</td>
 			<td>{{ order.status }}</td>

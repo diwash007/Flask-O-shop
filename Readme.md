@@ -6,6 +6,7 @@ An E-Commerce app built with Python Flask
  - Proper user authentication and authorization
  - Stripe Payment Integration
  - Custom admin panel for order processing and managing items
+ - Item Search feature
  - Boostrap + custom CSS UI
 
 # Prerequisties

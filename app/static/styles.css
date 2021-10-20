@@ -2,6 +2,10 @@
 	padding: 10vh 0;
 }
 
+a:hover {
+	text-decoration: none;
+}
+
 .navbar {
 	padding: .7rem 6rem;
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.19);
@@ -59,6 +63,11 @@ form .btn {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.item-display {
+	margin: 0 auto;
+	max-width: 500px;
+}
+
 .add-to-cart {
 	background-color: green;
 }
@@ -77,14 +86,19 @@ form .btn {
 }
 
 .pic {
-	width:100px;
-	height: 100px;
+	width:150px;
+	height: 150px;
+}
+
+.img-wrapper {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 15px;
 }
 
 .right-item {
 	float:right;
 	color:green;
-	font-weight: bolder;
 }
 
 .check {
@@ -95,10 +109,15 @@ form .btn {
 }
 
 .checkout {
+	cursor:pointer;
 	padding: 5px;
 	border-radius:5px;
 }
 
 .details {
-	font-size: 0.9em;
+	padding: 15px 0;
+}
+
+.checked {
+	color: orange;
 }

@@ -44,7 +44,6 @@ def add():
 def edit(type, id):
     if type == "item":
         item = Item.query.get(id)
-        print(item)
         form = AddItemForm(
             name = item.name,
             price = item.price,

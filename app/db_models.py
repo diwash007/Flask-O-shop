@@ -4,11 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-cart = db.Table('cart',
-		db.Column('uid', db.Integer, db.ForeignKey('users.id')),
-		db.Column('itemid', db.Integer, db.ForeignKey('items.id'))
-)
-
 class User(UserMixin, db.Model):
 	__tablename__ = "users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -18,8 +13,18 @@ class User(UserMixin, db.Model):
 	password = db.Column(db.String(250), nullable=False)
 	admin = db.Column(db.Boolean, nullable=True, default=False)
 	email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
-	cart_items = db.relationship("Item", secondary=cart, backref=db.backref('owners', lazy='dynamic'))
+	cart = db.relationship('Cart', backref='buyer')
 	orders = db.relationship("Order", backref='customer')
+
+	def add_to_cart(self, itemid, quantity):
+		item_to_add = Cart(itemid=itemid, uid=self.id, quantity=quantity)
+		db.session.add(item_to_add)
+		db.session.commit()
+
+	def remove_from_cart(self, itemid, quantity):
+		item_to_remove = Cart.query.filter_by(itemid=itemid, uid=self.id, quantity=quantity).first()
+		db.session.delete(item_to_remove)
+		db.session.commit()
 
 class Item(db.Model):
 	__tablename__ = "items"
@@ -31,15 +36,14 @@ class Item(db.Model):
 	details = db.Column(db.String(250), nullable=False)
 	price_id = db.Column(db.String(250), nullable=False)
 	orders = db.relationship("Ordered_item", backref="item")
-# 	user = relationship("Cart", back_populates="item")
+	in_cart = db.relationship("Cart", backref="item")
 
-# class Cart(db.Model):
-# 	__tablename__ = "cart"
-# 	id = db.Column(db.Integer, primary_key=True)
-# 	uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-# 	itemid = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
-# 	user = relationship("User", back_populates="item")
-# 	item = relationship("Item", back_populates="user")
+class Cart(db.Model):
+	__tablename__ = "cart"
+	id = db.Column(db.Integer, primary_key=True)
+	uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+	itemid = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
+	quantity = db.Column(db.Integer, nullable=False, default=1)
 
 class Order(db.Model):
 	__tablename__ = "orders"
@@ -54,3 +58,4 @@ class Ordered_item(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	oid = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
 	itemid = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
+	quantity = db.Column(db.Integer, db.ForeignKey('cart.quantity'), nullable=False)

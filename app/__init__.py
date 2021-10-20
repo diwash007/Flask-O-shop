@@ -124,48 +124,59 @@ def resend():
 	flash('Confirmation email sent successfully.', 'success')
 	return redirect(url_for('login'))
 
-@app.route("/add/<id>")
+@app.route("/add/<id>", methods=['POST'])
 def add_to_cart(id):
 	if not current_user.is_authenticated:
 		flash('You must login first!', 'error')
 		return redirect(url_for('login'))
 
 	item = Item.query.get(id)
-	if current_user in item.owners:
-		flash(f'''{item.name} is already in the <a href=cart>cart</a>.''', 'error')
-		return(redirect(url_for('home')))
-	item.owners.append(current_user)
-	db.session.commit()
-	flash(f'''{item.name} successfully added to the <a href=cart>cart</a>.''','success')
-	return redirect(url_for('home'))
+	if request.method == "POST":
+		quantity = request.form["quantity"]
+		current_user.add_to_cart(id, quantity)
+		flash(f'''{item.name} successfully added to the <a href=cart>cart</a>.''','success')
+		return redirect(url_for('home'))
 
 @app.route("/cart")
 @login_required
 def cart():
 	price = 0
 	price_ids = []
-	for i in current_user.cart_items:
+	items = []
+	quantity = []
+	for cart in current_user.cart:
+		items.append(cart.item)
+		quantity.append(cart.quantity)
 		price_id_dict = {
-			"price": i.price_id,
-			"quantity": 1,
+			"price": cart.item.price_id,
+			"quantity": cart.quantity,
 			}
 		price_ids.append(price_id_dict)
-		price += i.price
-	return render_template('cart.html', items=current_user.cart_items, price=price, price_ids=price_ids)
+		price += cart.item.price*cart.quantity
+	return render_template('cart.html', items=items, price=price, price_ids=price_ids, quantity=quantity)
 
 @app.route('/orders')
 @login_required
 def orders():
 	return render_template('orders.html', orders=current_user.orders)
 
-@app.route("/remove/<id>")
+@app.route("/remove/<id>/<quantity>")
 @login_required
-def remove(id):
-	item = Item.query.get(id)
-	item.owners.remove(current_user)
-	db.session.commit()
-	flash(f'{item.name} successfully removed from the cart!','error')
+def remove(id, quantity):
+	current_user.remove_from_cart(id, quantity)
 	return redirect(url_for('cart'))
+
+@app.route('/item/<int:id>')
+def item(id):
+	item = Item.query.get(id)
+	return render_template('item.html', item=item)
+
+@app.route('/search')
+def search():
+	query = request.args['query']
+	search = "%{}%".format(query)
+	items = Item.query.filter(Item.name.like(search)).all()
+	return render_template('home.html', items=items, search=True, query=query)
 
 # stripe stuffs
 @app.route('/payment_success')

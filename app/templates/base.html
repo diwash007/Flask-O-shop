@@ -21,9 +21,9 @@
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form class="form-inline my-2 my-lg-0 ml-auto">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" size="40">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        <form class="form-inline my-2 my-lg-0 ml-auto" action="{{ url_for('search') }}">
+          <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" size="40" required>
+          <input class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search">
         </form>
         <ul class="navbar-nav ml-auto">
           {% if not current_user.is_authenticated %}
@@ -53,12 +53,13 @@
               <i class='fa fa-user-circle' style='font-size:25px'></i>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="nav-link text-muted" href="#">{{ current_user.name }}</a>
+              <span class="nav-link text-muted">{{ current_user.name }}</a>
+              <div class="dropdown-divider"></div>
               <a class="nav-link" href="{{ url_for('orders') }}">Orders</a>
               {% if current_user.admin == 1 %}
               <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin</a>
               {% endif %}
-              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+              <a class="nav-link" href="{{ url_for('logout') }}"><font color="red">Logout</font></a>
             </div>
           </li>
           {% endif %}

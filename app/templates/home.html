@@ -22,19 +22,62 @@
 		</div><br>
 	{% endif %}
 
+	{% if search %}
+	<h3>Search results for "{{ query }}":</h3>
+	{% else %}
+	<h3>New Arrivals</h3>
+	<br>
 	<div class="items">
-	{% for item in items %}
-	<div class="item">
-		<div class="item-wrapper">
-			<img src="{{ item.image }}" class="pic"><br><br>
-			<b>{{ item.name }}</b>
-			<span class="right-item">${{ item.price }}</span><br>
-			<div class="details"> {{ item.details | safe }} </div><br>
-			<a href="{{ url_for('add_to_cart', id=item.id) }}">
-				<button class="add-to-cart"> Add to Cart </button>
-			</a>
+	{% for item in items[::-1] %}
+	<a href="{{ url_for('item', id=item.id) }}">
+		<div class="item">
+			<div class="item-wrapper">
+				<div class="img-wrapper">
+					<img src="{{ item.image }}" class="pic">
+				</div>
+				{{ item.name }}
+				<span class="right-item">${{ item.price }}</span><br>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<span class="text-muted" >({{ range(1, 51) | random }})</span>
+			</div>
 		</div>
-	</div>
+	</a>
 	{% endfor %}
 	</div>
+
+	<br><br><h3>Most Popular</h3>
+	{% endif %}
+	<br>
+	<div class="items">
+	{% for item in items %}
+	<a href="{{ url_for('item', id=item.id) }}">
+		<div class="item">
+			<div class="item-wrapper">
+				<div class="img-wrapper">
+					<img src="{{ item.image }}" class="pic">
+				</div>
+				{{ item.name }}
+				<span class="right-item">${{ item.price }}</span><br>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<i class="fa fa-star checked"></i>
+					<span class="text-muted" >({{ range(1, 51) | random }})</span>
+			</div>
+		</div>
+	</a>
+	{% endfor %}
+	</div>
+
+	{% if not items %}
+	<div class="flash-error">
+		No items found.<br>
+		<a href="{{ url_for('home') }}">Discover new items</a>
+	</div>
+	{% endif %}
 {% endblock %}

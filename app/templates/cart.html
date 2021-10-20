@@ -27,16 +27,25 @@
 			Cart is empty!<br>
 			<a href="{{ url_for('home') }}">Discover new items</a>
 		</div>
+	{% else %}
+		<a href="{{ url_for('home') }}" class="right-item">Add more items</a><br><br>
 	{% endif %}
+
 	<div class="items">
-	{% for i in items %}
+	{% for i in range(items|length) %}
     <div class="item">
 		<div class="item-wrapper">
-			<img src="{{ i.image }}" class="pic"><br><br>
-			<b>{{ i.name }}</b>
-			<span class="right-item">${{ i.price }}</span><br>
-			<div class="details">{{ i.details | safe }}</div><br>
-			<a href="{{ url_for('remove', id=i.id) }}">
+			<div class="img-wrapper">
+				<img src="{{ items[i].image }}" class="pic">
+			</div>
+			<b>{{ items[i].name }}</b>
+			<span class="right-item">${{ items[i].price }}</span><br>
+			Quantity: 
+			<span class="right-item">{{ quantity[i] }}</span><br>
+			Total:
+			<span class="right-item">${{ quantity[i]*items[i].price }}</span>
+			<br><br>
+			<a href="{{ url_for('remove', id=items[i].id, quantity=quantity[i]) }}">
 				<button class="remove-from-cart"> Remove from Cart </button>
 			</a>
 		</div>

@@ -14,7 +14,7 @@
 			{% else %}
 				<div class="success">
 			{% endif %}
-				{{ msg }}</div><br>
+				{{ msg | safe }}</div><br>
 		{% endfor %}
 	{% endwith %}
 	<div class="forms">

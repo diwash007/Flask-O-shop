@@ -121,3 +121,9 @@ form .btn {
 .checked {
 	color: orange;
 }
+
+@media only screen and (max-width: 600px) {
+	.navbar {
+		padding: .3rem 1rem;
+	}
+}

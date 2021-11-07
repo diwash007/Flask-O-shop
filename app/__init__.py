@@ -58,7 +58,7 @@ def login():
 		email = form.email.data
 		user = User.query.filter_by(email=email).first()
 		if user == None:
-			flash(f'User with email {email} doesn\'t exist!', 'error')
+			flash(f'User with email {email} doesn\'t exist!<br> <a href={url_for("register")}>Register now!</a>', 'error')
 			return redirect(url_for('login'))
 		elif check_password_hash(user.password, form.password.data):
 			login_user(user)
@@ -76,7 +76,7 @@ def register():
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()
 		if user:
-			flash(f"User with email {user.email} already exists!!", "error")
+			flash(f"User with email {user.email} already exists!!<br> <a href={url_for('login')}>Login now!</a>", "error")
 			return redirect(url_for('register'))
 		new_user = User(name=form.name.data,
 						email=form.email.data,
@@ -127,14 +127,14 @@ def resend():
 @app.route("/add/<id>", methods=['POST'])
 def add_to_cart(id):
 	if not current_user.is_authenticated:
-		flash('You must login first!', 'error')
+		flash(f'You must login first!<br> <a href={url_for("login")}>Login now!</a>', 'error')
 		return redirect(url_for('login'))
 
 	item = Item.query.get(id)
 	if request.method == "POST":
 		quantity = request.form["quantity"]
 		current_user.add_to_cart(id, quantity)
-		flash(f'''{item.name} successfully added to the <a href=cart>cart</a>.''','success')
+		flash(f'''{item.name} successfully added to the <a href=cart>cart</a>.<br> <a href={url_for("cart")}>view cart!</a>''','success')
 		return redirect(url_for('home'))
 
 @app.route("/cart")

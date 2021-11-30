@@ -13,7 +13,7 @@ An E-Commerce app built with Python Flask
 
  - [Python](https://www.python.org/)
  - Stripe API key for Stripe Payment Integration
- - Stripe webhook setup
+ - [Stripe webhook setup](https://stripe.com/docs/payments/handling-payment-events#install-cli)
 
 # Installation
 Downloading files:

@@ -87,8 +87,8 @@ def register():
 						phone=form.phone.data)
 		db.session.add(new_user)
 		db.session.commit()
-		send_confirmation_email(new_user.email)
-		flash('Thanks for registering! Please check your email to confirm your email address.', 'success')
+		# send_confirmation_email(new_user.email)
+		flash('Thanks for registering! You may login now.', 'success')
 		return redirect(url_for('login'))
 	return render_template("register.html", form=form)
 

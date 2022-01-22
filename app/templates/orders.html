@@ -15,12 +15,6 @@
 			{{ msg | safe }}</div><br>
 	{% endfor %}
 	{% endwith %}
-	{% if current_user.is_authenticated and not current_user.email_confirmed %}
-		<div>
-			Please confirm your email.
-			<a href="{{ url_for('resend') }}">Click here to resend email confirmation link</a>
-		</div><br>
-	{% endif %}
 
     {% if not orders %}
 		<div class="flash-error">

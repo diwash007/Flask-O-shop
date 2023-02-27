@@ -26,4 +26,4 @@ pip install -r requirements.txt
 ```
 
 # Live Project
-https://flaskoshop.herokuapp.com
+https://flaskoshop.gilobyte.com
